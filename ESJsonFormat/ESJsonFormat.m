@@ -14,10 +14,12 @@
 #import "ESPbxprojInfo.h"
 #import "ESJsonFormatSetting.h"
 #import "ESClassInfo.h"
+#import "STClassInfoCheckWindowController.h"
 
 @interface ESJsonFormat()<ESInputJsonControllerDelegate>
 @property (nonatomic, strong) ESInputJsonController *inputCtrl;
 @property (nonatomic, strong) ESSettingController *settingCtrl;
+@property (nonatomic, strong) STClassInfoCheckWindowController *checkCtrl;
 @property (nonatomic, strong) id eventMonitor;
 @property (nonatomic, strong, readwrite) NSBundle *bundle;
 @property (nonatomic, copy) NSString *currentFilePath;
@@ -46,7 +48,7 @@
                                                  selector:@selector(didApplicationFinishLaunchingNotification:)
                                                      name:NSApplicationDidFinishLaunchingNotification
                                                    object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(outputResult:) name:ESFormatResultNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(outputResult2:) name:ESFormatResultNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationLog:) name:NSTextViewDidChangeSelectionNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationLog:) name:@"IDEEditorDocumentDidChangeNotification" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationLog:) name:@"PBXProjectDidOpenNotification" object:nil];
@@ -82,67 +84,46 @@
     }
 }
 
--(void)outputResult:(NSNotification*)noti{
-    ESClassInfo *classInfo = noti.object;
-    if ([ESJsonFormatSetting defaultSetting].outputToFiles) {
-        //选择保存路径
-        NSOpenPanel *panel = [NSOpenPanel openPanel];
-        [panel setTitle:@"ESJsonFormat"];
-        [panel setCanChooseDirectories:YES];
-        [panel setCanCreateDirectories:YES];
-        [panel setCanChooseFiles:NO];
-        
-        if ([panel runModal] == NSModalResponseOK) {
-            NSString *folderPath = [[[panel URLs] objectAtIndex:0] relativePath];
-            [classInfo createFileWithFolderPath:folderPath];
-            [[NSWorkspace sharedWorkspace] openFile:folderPath];
-        }
-        
-    }else{
-        if (!self.currentTextView) return;
-        if (!self.isSwift) {
-            //先添加主类的属性
-            [self.currentTextView insertText:classInfo.propertyContent];
-            
-            //再添加把其他类的的字符串拼接到最后面
-            [self.currentTextView insertText:classInfo.classInsertTextViewContentForH replacementRange:NSMakeRange(self.currentTextView.string.length, 0)];
-            
-            //@class
-            NSString *atClassContent = classInfo.atClassContent;
-            if (atClassContent.length>0) {
-                NSRange atInsertRange = [self.currentTextView.string rangeOfString:@"\n@interface"];
-                if (atInsertRange.location != NSNotFound) {
-                    [self.currentTextView insertText:[NSString stringWithFormat:@"\n%@",atClassContent] replacementRange:NSMakeRange(atInsertRange.location, 0)];
-                }
-            }
-            
-            //再添加.m文件的内容
-            NSString *urlStr = [NSString stringWithFormat:@"%@m",[self.currentFilePath substringWithRange:NSMakeRange(0, self.currentFilePath.length-1)]] ;
-            NSURL *writeUrl = [NSURL URLWithString:urlStr];
-            //The original content
-            NSString *originalContent = [NSString stringWithContentsOfURL:writeUrl encoding:NSUTF8StringEncoding error:nil];
-            
-            //输出RootClass的impOjbClassInArray方法
-            if ([ESJsonFormatSetting defaultSetting].impOjbClassInArray) {
-                NSString *methodStr = [ESJsonFormatManager methodContentOfObjectClassInArrayWithClassInfo:classInfo];
-                if (methodStr.length) {
-                    NSRange lastEndRange = [originalContent rangeOfString:@"@end"];
-                    if (lastEndRange.location != NSNotFound) {
-                        originalContent = [originalContent stringByReplacingCharactersInRange:NSMakeRange(lastEndRange.location, 0) withString:methodStr];
-                    }
-                }
-            }
-            originalContent = [originalContent stringByReplacingCharactersInRange:NSMakeRange(originalContent.length, 0) withString:classInfo.classInsertTextViewContentForM];
-            [originalContent writeToURL:writeUrl atomically:YES encoding:NSUTF8StringEncoding error:nil];
-            
-        }else{
-            //Swift
-            [self.currentTextView insertText:classInfo.propertyContent];
-            
-            //再添加把其他类的的字符串拼接到最后面
-            [self.currentTextView insertText:classInfo.classInsertTextViewContentForH replacementRange:NSMakeRange(self.currentTextView.string.length, 0)];
-        }
-    }
+-(void)outputResult2:(NSNotification*)noti{
+    STClassInfo *classInfo = noti.object;
+    self.checkCtrl = [[STClassInfoCheckWindowController alloc] initWithClassInfo:classInfo];
+    [self.checkCtrl showWindow:self.checkCtrl];
+    __weak typeof(self) weakSelf = self;
+    [self.checkCtrl setCheckAction:^(STClassInfo *classInfo){
+        [weakSelf outputByInfo:classInfo];
+    }];
+}
+
+- (void)outputByInfo:(STClassInfo *)classInfo{
+    if (!self.currentTextView) return;
+    
+    [self appendToHead:self.currentFilePath byInfo:classInfo];
+    [self appendToMFiel:self.currentFilePath byInfo:classInfo];
+    
+}
+
+- (void)appendToHead:(NSString *)path byInfo:(STClassInfo *)classInfo{
+    //再添加.m文件的内容
+    NSString *urlStr = [NSString stringWithFormat:@"%@h",[self.currentFilePath substringWithRange:NSMakeRange(0, path.length-1)]] ;
+    NSURL *writeUrl = [NSURL URLWithString:urlStr];
+    //The original content
+    NSString *originalContent = [NSString stringWithContentsOfURL:writeUrl encoding:NSUTF8StringEncoding error:nil];
+    
+    originalContent = [originalContent stringByAppendingString:[classInfo classInterfaceContent]];
+    
+    [originalContent writeToURL:writeUrl atomically:YES encoding:NSUTF8StringEncoding error:nil];
+}
+
+- (void)appendToMFiel:(NSString *)path byInfo:(STClassInfo *)classInfo{
+    //再添加.m文件的内容
+    NSString *urlStr = [NSString stringWithFormat:@"%@m",[self.currentFilePath substringWithRange:NSMakeRange(0, self.currentFilePath.length-1)]] ;
+    NSURL *writeUrl = [NSURL URLWithString:urlStr];
+    //The original content
+    NSString *originalContent = [NSString stringWithContentsOfURL:writeUrl encoding:NSUTF8StringEncoding error:nil];
+    
+    originalContent = [originalContent stringByAppendingString:[classInfo classImplementContent]];
+    
+    [originalContent writeToURL:writeUrl atomically:YES encoding:NSUTF8StringEncoding error:nil];
 }
 
 - (void)didApplicationFinishLaunchingNotification:(NSNotification*)noti{

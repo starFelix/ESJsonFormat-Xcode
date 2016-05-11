@@ -13,6 +13,7 @@
 #import "ESClassInfo.h"
 #import "ESJsonFormatSetting.h"
 #import "ESPair.h"
+#import "STClassInfo.h"
 
 @interface ESInputJsonController ()<NSTextViewDelegate,NSWindowDelegate>
 
@@ -71,13 +72,18 @@
         NSError *error = result;
         NSAlert *alert = [NSAlert alertWithError:error];
         [alert runModal];
-        NSLog(@"Error：Json is invalid");
     }else{
         
-        ESClassInfo *classInfo = [self dealClassNameWithJsonResult:result];
+        STClassInfo *classInfo =  nil;
+        @try {
+            classInfo = [[STClassInfo alloc] initWithJSON:result];
+        } @catch (NSException *exception) {
+            classInfo = nil;
+        } @finally {
+            [self close];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ESFormatResultNotification object:classInfo];
+        }
         
-        [self close];
-        [[NSNotificationCenter defaultCenter] postNotificationName:ESFormatResultNotification object:classInfo];
     }
 }
 

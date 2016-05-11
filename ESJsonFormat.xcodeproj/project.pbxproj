@@ -27,6 +27,9 @@
 		4FF8F36E1B401368005C73C2 /* ESFormatInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FF8F36D1B401368005C73C2 /* ESFormatInfo.m */; };
 		4FF8F3721B401487005C73C2 /* NSObject_Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FF8F3711B401487005C73C2 /* NSObject_Extension.m */; };
 		4FF8F3751B4014AB005C73C2 /* ESPbxprojInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FF8F3741B4014AB005C73C2 /* ESPbxprojInfo.m */; };
+		884CC6001CE2A5E900C90F49 /* STClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 884CC5FF1CE2A5E900C90F49 /* STClassInfo.m */; };
+		884CC6041CE2B15900C90F49 /* STClassInfoCheckWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 884CC6021CE2B15900C90F49 /* STClassInfoCheckWindowController.m */; };
+		884CC6051CE2B15900C90F49 /* STClassInfoCheckWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 884CC6031CE2B15900C90F49 /* STClassInfoCheckWindowController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +69,11 @@
 		4FF8F3731B4014AB005C73C2 /* ESPbxprojInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESPbxprojInfo.h; sourceTree = "<group>"; };
 		4FF8F3741B4014AB005C73C2 /* ESPbxprojInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ESPbxprojInfo.m; sourceTree = "<group>"; };
 		4FF8F3761B401914005C73C2 /* ESJsonFormat-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ESJsonFormat-Prefix.pch"; sourceTree = "<group>"; };
+		884CC5FE1CE2A5E900C90F49 /* STClassInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STClassInfo.h; sourceTree = "<group>"; };
+		884CC5FF1CE2A5E900C90F49 /* STClassInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STClassInfo.m; sourceTree = "<group>"; };
+		884CC6011CE2B15900C90F49 /* STClassInfoCheckWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STClassInfoCheckWindowController.h; sourceTree = "<group>"; };
+		884CC6021CE2B15900C90F49 /* STClassInfoCheckWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STClassInfoCheckWindowController.m; sourceTree = "<group>"; };
+		884CC6031CE2B15900C90F49 /* STClassInfoCheckWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STClassInfoCheckWindowController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +173,9 @@
 				4FF8F3551B40100C005C73C2 /* ESInputJsonController.h */,
 				4FF8F3561B40100C005C73C2 /* ESInputJsonController.m */,
 				4FF8F3571B40100C005C73C2 /* ESInputJsonController.xib */,
+				884CC6011CE2B15900C90F49 /* STClassInfoCheckWindowController.h */,
+				884CC6021CE2B15900C90F49 /* STClassInfoCheckWindowController.m */,
+				884CC6031CE2B15900C90F49 /* STClassInfoCheckWindowController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -174,6 +185,8 @@
 			children = (
 				4FF8F3661B401233005C73C2 /* ESClassInfo.h */,
 				4FF8F3671B401233005C73C2 /* ESClassInfo.m */,
+				884CC5FE1CE2A5E900C90F49 /* STClassInfo.h */,
+				884CC5FF1CE2A5E900C90F49 /* STClassInfo.m */,
 				4FF8F36C1B401368005C73C2 /* ESFormatInfo.h */,
 				4FF8F36D1B401368005C73C2 /* ESFormatInfo.m */,
 				4FF8F3731B4014AB005C73C2 /* ESPbxprojInfo.h */,
@@ -254,6 +267,7 @@
 			files = (
 				4FF8F35B1B40100C005C73C2 /* ESInputJsonController.xib in Resources */,
 				4FA2FE6C1B5E54B8006F9974 /* DataModelsTemplate.txt in Resources */,
+				884CC6051CE2B15900C90F49 /* STClassInfoCheckWindowController.xib in Resources */,
 				4FF8F3451B400F8B005C73C2 /* ESJsonFormat.xcscheme in Resources */,
 				4FB2DAA21B5BD84E000D5DA9 /* ESSettingController.xib in Resources */,
 				4FF8F3591B40100C005C73C2 /* ESDialogController.xib in Resources */,
@@ -267,6 +281,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				884CC6041CE2B15900C90F49 /* STClassInfoCheckWindowController.m in Sources */,
 				4FF8F3681B401233005C73C2 /* ESClassInfo.m in Sources */,
 				4FB2DAA61B5BDC53000D5DA9 /* ESJsonFormatSetting.m in Sources */,
 				4FF8F3481B400F8B005C73C2 /* ESJsonFormat.m in Sources */,
@@ -278,6 +293,7 @@
 				4FC82A491B520D9D00B4239F /* ESUtils.m in Sources */,
 				4FF8F36B1B4012DC005C73C2 /* ESJsonFormatManager.m in Sources */,
 				4FF8F3581B40100C005C73C2 /* ESDialogController.m in Sources */,
+				884CC6001CE2A5E900C90F49 /* STClassInfo.m in Sources */,
 				4FF8F3751B4014AB005C73C2 /* ESPbxprojInfo.m in Sources */,
 				4FDBA00D1B47BA8E00FAEBE9 /* NSString+ESExtension.m in Sources */,
 			);
